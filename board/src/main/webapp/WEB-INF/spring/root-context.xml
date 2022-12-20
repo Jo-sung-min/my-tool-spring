@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 
+	https://www.springframework.org/schema/beans/spring-beans.xsd
+	http://mybatis.org/schema/mybatis-spring 
+	http://mybatis.org/schema/mybatis-spring-1.2.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/aop
+   	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- 8.25 파일다운 빈으로 등록 -->
+	<bean id="fileDown" class="com.upload.util.DownloadView">
+	</bean>
+	
+	
+	
+	
+	<!-- Root Context: Service(비지니스로직처리), DB관련 설정 -->
+	<!-- 파일 업로드 8.25 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="-1"></property>
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+	
+	
+	<!-- 커넥션 풀 세팅  -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" /> 
+		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@192.168.50.195:1521:ORCL" />
+		<property name="username" value="c##java01" />
+		<property name="password" value="java01" />
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<!--  MyBatis 연동 설정  -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- Mapper 스캔하도록 설정 -->
+	<mybatis-spring:scan base-package="com.board.persistence"/>
+	<mybatis-spring:scan base-package="com.member.persistence"/>
+	
+	<context:component-scan base-package="com.board.service" />
+	<context:component-scan base-package="com.member.service" />
+	
+	<!-- @service, @controller, @component 이런태그 붙은애들 스프링빈으로 등록 해준다 -->
+	<!-- aop autoproxy 까지 해줘야 실행까지 된다. -->
+	<context:component-scan base-package="com.board.aop" />
+	<!-- servlet 보다 root 에 적어줘야 전 구간에서 호환 가능 -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<!-- aop 설정하기위해 bean으로 등록 8.25 -->
+	<bean id="advice" class="com.board.aop.Advice"/>
+		
+	<!-- anno 어노테이션 으로 사용하기위해 bean 등록 -->	
+		
+		
+		
+		
+	<!-- 
+	<aop:before method="beforeAD" pointcut-ref="pc1"/>
+	
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.board.service.TestService*.*(..))" id="pc1"/>
+		<aop:aspect ref="advice">
+			<aop:before method="beforeAD" pointcut-ref="pc1"/>
+			<aop:after-returning method="afterReturning" pointcut-ref="pc1"/>
+			<aop:around method="around" pointcut-ref="pc1"/>	
+			<aop:after-throwing method="afterThrowing" pointcut-ref="pc1"/>
+			<aop:after method="afterAop" pointcut-ref="pc1"/>
+		</aop:aspect>
+	</aop:config>	
+	
+	 -->
+	
+	
+		
+</beans>

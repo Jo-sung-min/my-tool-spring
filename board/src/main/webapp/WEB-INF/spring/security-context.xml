@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-5.2.xsd">
+
+
+	<!-- 시큐리티 설정 파일 -->
+	
+	
+	<!-- 로그아웃 성공 처리 핸들러 9.1-->	
+	<bean id="logoutSuccessHandler" class="com.member.service.CustomLogoutSuccessHandler"></bean>
+	<!-- 로그인 성공시 처리핸들러 등록8.30 -->	
+	<bean id="loginSuccessHandler" class="com.member.service.CustomLoginSuccessHandler"/>
+	<!-- 접근 제한시 처리할 행들러 빈으로 등록 8.30 -->
+	<bean id="customAccessDenied" class="com.member.service.CustomAccessDeniedHandler"></bean>
+	<!-- 비밀번호 보호를 위해 암호화 클래스 빈으로 등록 -->
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+	<!-- 시큐리티에서 우리가 원하는 형태의 회원테이블로 처리되기 위한 클래스 빈으로 등록 -->
+	<bean id="customUserDetailsService" class="com.member.service.CustomUserDetailsService"></bean>	
+
+
+
+
+	<!-- 접근 제한 설정 -->
+	<security:http>
+		<!--특정 URI에 접근 제한 설정 로그인페이지를 지정 안해놓으면 security가 만든 로그인 페이지로
+		보낸다-->
+		<security:intercept-url  pattern="/common/*" access="permitAll"/>
+		<security:intercept-url  pattern="/member/*" access="hasRole('ROLE_MEMBER')"/>
+		<security:intercept-url  pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
+
+		<!-- 접근 제한시 403 페이지 대신 보여줄 페이지 세팅 
+		<security:access-denied-handler error-page="/common/accessError"/>-->
+		
+		<!-- 접근 제한시 처리해야하는 핸들러가 자동으로 실행 됨. -->
+		<security:access-denied-handler ref="customAccessDenied"/>
+
+		<!-- 시큐리티 로그인 페이지를 커스텀 경로로 변경(우리가 만든 로그인폼 경로) authentication==입증 -->
+		<security:form-login login-page="/common/login" authentication-success-handler-ref="loginSuccessHandler"/>
+		
+		<!-- 시큐리티로 로그아웃처리 -->
+		<security:logout logout-url="/logout" invalidate-session="true" delete-cookies="JSESSION_ID,remember-me" success-handler-ref="logoutSuccessHandler"/>
+		
+		<!-- 자동로그인 처리8.30
+		data-source-ref : DB 에 접근가능한 DataSouce를 지정, 테이블이용해 로그인 정보접근 
+		root 에 히카리 아이디가 저거다 같은 xml 은 모든 빈을 공유함
+		token-validity-seconds="" : 쿠키 유효시간 설정 : 60*60*24*7
+		-->
+		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
+		<!-- csrf 비활성화 
+		<security:csrf disabled="true"/>-->
+		
+		
+	</security:http>
+	
+	
+	
+	
+	<!-- 인증과 권한 처리해주는 태그 -->
+	<security:authentication-manager>
+		<!-- 권한에 대한 인증 해주는 authentication-provider -->
+		<security:authentication-provider user-service-ref="customUserDetailsService">
+		
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+			
+		</security:authentication-provider>		
+	
+	</security:authentication-manager>
+	
+</beans>

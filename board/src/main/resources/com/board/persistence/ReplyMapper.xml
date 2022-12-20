@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.persistence.ReplyMapper">
+
+	
+	<insert id="add">
+		insert into springReply(repno, bno, reply, replyer) 
+		values(springReply_seq.nextval,#{bno},#{reply},#{replyer})
+	</insert>
+	
+	<select id="getList" resultType="com.board.domain.ReplyVO">
+		select * from springReply where bno=#{bno} 
+		order by reg
+	</select>
+	
+	<delete id="delete">
+		delete from springReply where repno=#{repno}
+	
+	</delete>
+
+	<update id="modify">
+		update springReply set reply=#{reply}, replyer= #{replyer} where repno=#{repno} 
+	</update>
+
+
+
+
+
+</mapper>
