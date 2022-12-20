@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 마이바티스가 인터페이스와 잘 바인딩 해줄수있게 인터페이스의 경로를 적어줌
+  		인터페이스를 마치 DAO 처럼 사용할 것임 어노테이션은 복잡한 쿼리문을
+  		작성할 수 없기때문에 이렇게 둘이 병합해서 사용한다.
+  -->
+  
+  <mapper namespace="com.spring.mapper.TimeMapper"> 
+  	<select id="getTime2" resultType="string">
+  		select sysdate from dual
+  	</select>
+  
+  
+  </mapper>

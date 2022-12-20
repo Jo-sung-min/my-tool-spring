@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+  <configuration>
+  		<!-- sql 문을 처리할때 null 값이 올 경우 에러 발생가능 
+  			ex) DTO 에 int 타입 변수 만들었는데 해당 변수가 값이 없이 전달 되었을 경우
+  			동적  SQL !=null 로 검사 안되고 , 자바 문법에 따라 인스턴스변수 자동초기화인 0
+  			으로 값이 처리될 경우가 있다. 세팅 뜻 null인 값으로 넘어올경우 db에 그냥 null
+  			로 채워줘라 라는 뜻
+  		<settings>
+  			<setting name="jdbcTypeForNull" value="NULL"/>
+  		</settings>
+  		-->
+  
+  
+  		<!-- 별칭 세팅태그 -->
+  		<typeAliases >
+  			<typeAlias type="com.spring.dto.SampleDTO" alias="SampleDTO"/>
+  		
+  		</typeAliases>
+  
+  
+  
+  </configuration>

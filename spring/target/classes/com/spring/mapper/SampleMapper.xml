@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.spring.mapper.SampleMapper">
+  
+  	<select id="getCount" resultType="int">
+  		select count(*) from test	
+  	</select>
+  	
+  	<select id="testGetMaxAge" resultType="int">
+  		select max(age) from test	
+  	</select>
+  	
+  	<select id="getReg" resultType="java.sql.Timestamp">
+  		select reg from test where id=#{value}	
+  	</select>
+  	
+  	<!-- result 타입은 컬럼의 갯수만 신경쓰면되고 모든 경로를 써줘야함 -->
+  	<select id="getAllRecord" resultType="SampleDTO">
+  		select * from test	
+  	</select>
+  	
+  	<!-- 중요!! 파라미터 하나 넣고 받는법 ? 대신#{} 쓴다 -->
+  	<select id="getOnePerson" parameterType="string" resultType="SampleDTO">
+  		select * from test where id=#{value} 	
+  	</select>
+  	
+	<insert id="insertRecord" parameterType="SampleDTO">
+		insert into test(id,pw,age,reg) values(#{id},#{pw},#{age},sysdate)
+	</insert>  	
+	<!-- 파라미터로 업데이트    
+  	<update id="updateRecord" >
+  		update test set pw=#{pw}, age=#{age} where id =#{id}
+  	</update>
+  	-->
+  	<!-- 해쉬맵으로 업데이트 해쉬맵의 key 값으로 #{여기} 를 채워준다-->
+  	<update id="updateRecord" >
+  		update test set pw=#{pw}, age=#{age} where id =#{id}
+  	</update>
+  
+  	<delete id="deleteRecord">
+  		delete from test where id=#{id}
+  	</delete>
+  	
+  
+  </mapper>
+  
+  
